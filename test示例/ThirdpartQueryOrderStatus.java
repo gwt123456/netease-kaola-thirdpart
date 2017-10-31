@@ -1,11 +1,3 @@
-/**
- * Copyright 2014-2015, NetEase, Inc. All Rights Reserved.
- * 
- * Date: 2016年4月15日
- */
-
-package com.netease.haitao.thirdpart.newtest;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
@@ -25,25 +17,16 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 
-import com.haitao.thirdpart.sdk.APIUtil;
-import com.netease.haitao.thirdpart.constant.LogConstant;
-
-/**
- * 
- * 
- * @author lianglihai<hzlianglihai@corp.netease.com>
- * @since 2016年4月15日
- */
 public class ThirdpartQueryOrderStatus {
 
     public static void main(String[] args) throws JSONException {
         String url = "http://test1.thirdpart.kaolatest.netease.com/api/queryOrderStatus";
         HttpPost httpRequst = new HttpPost(url);// 创建HttpPost对象
 
-        String thirdPartOrderId = "20161zhaolong004";
+        String thirdPartOrderId = "xxxxxxxx";
         String source = "1200";
-        String appKey = "bb0b3ad64c9e5eb06c2fb6f163bf179e79051bd5c9b652fc45dc68a2b5dd23c6";
-        String appSecret = "4ed8b056c32939b9fd66987470b3e9fb720bdded02197e678e516bdcdf810833";
+        String appKey = "xxxxxxxxxxxxxxxxxxxx";
+        String appSecret = "xxxxxxxxxxxxxx";
 
 
         long time = System.currentTimeMillis();

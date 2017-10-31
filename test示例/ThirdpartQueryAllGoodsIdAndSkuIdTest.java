@@ -1,13 +1,3 @@
-/**
- * Copyright 2014-2015, NetEase, Inc. All Rights Reserved.
- * 
- * Date: 2016年4月15日
- */
-
-package com.netease.haitao.thirdpart.newtest;
-
-import com.haitao.thirdpart.sdk.APIUtil;
-import com.netease.haitao.thirdpart.constant.LogConstant;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -28,12 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
-/**
- * 
- * 
- * @author lianglihai<hzlianglihai@corp.netease.com>
- * @since 2016年4月15日
- */
 public class ThirdpartQueryAllGoodsIdAndSkuIdTest {
         String url = "http://test1.thirdpart.kaolatest.netease.com/api/queryAllGoodsIdAndSkuId";
         HttpPost httpRequst = new HttpPost(url);// 创建HttpPost对象
@@ -41,8 +25,8 @@ public class ThirdpartQueryAllGoodsIdAndSkuIdTest {
         long time = System.currentTimeMillis();
         String source = "1200";
         String sign_method = "md5";
-        String appKey = "bb0b3ad64c9e5eb06c2fb6f163bf179e79051bd5c9b652fc45dc68a2b5dd23c6";
-        String appSecret = "4ed8b056c32939b9fd66987470b3e9fb720bdded02197e678e516bdcdf810833";
+        String appKey = "xxxxxxxxxx";
+        String appSecret = "xxxxxxxxxxxxxxxxxx";
 
         TreeMap<String, String> parameterMap = new TreeMap<String, String>();
         parameterMap.put("timestamp", new Timestamp(time).toString());

@@ -1,18 +1,5 @@
-/**
- * Copyright 2014-2015, NetEase, Inc. All Rights Reserved.
- * 
- * Date: 2016年4月15日
- */
-
-package com.netease.haitao.thirdpart.newtest;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
-
+import com.haitao.thirdpart.sdk.APIUtil;
+import com.netease.haitao.thirdpart.constant.LogConstant;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -25,28 +12,28 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 
-import com.haitao.thirdpart.sdk.APIUtil;
-import com.netease.haitao.thirdpart.constant.LogConstant;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
 
-/**
- * 
- * 
- * @author lianglihai<hzlianglihai@corp.netease.com>
- * @since 2016年4月15日
- */
-public class ThirdPartQueryGoodsInfoByIdTest {
+public class ThirdpartQueryGoodsInfoByIdsTest {
     public static void main(String[] args) throws JSONException {
-        String url = "http://test1.thirdpart.kaolatest.netease.com/api/queryGoodsInfoById";
+        String url = "http://test1.thirdpart.kaolatest.netease.com/api/queryGoodsInfoByIds";
         HttpPost httpRequst = new HttpPost(url);// 创建HttpPost对象
 
         long time = System.currentTimeMillis();
         String source = "1200";
         String sign_method = "md5";
-        String appKey = "bb0b3ad64c9e5eb06c2fb6f163bf179e79051bd5c9b652fc45dc68a2b5dd23c6";
-        String appSecret = "4ed8b056c32939b9fd66987470b3e9fb720bdded02197e678e516bdcdf810833";
-        String skuId = "26153046-2308c416091d831c0f3be7b9cd82af20";
+        String appKey = "xxxxxxxxxxxxx";
+        String appSecret = "xxxxxxxxxxxxx";
+        List<String> skuIds= new ArrayList<>();
+        skuIds.add("xxxxxxx-xxxxxxxxxxx");
+        List<String> channelSalePrices = new ArrayList<>();
+        channelSalePrices.add("496");
         Integer queryType = 0;
-
         TreeMap<String, String> parameterMap = new TreeMap<String, String>();
         parameterMap.put("timestamp", new Timestamp(time).toString());
         parameterMap.put("v", "1.0");
@@ -54,12 +41,10 @@ public class ThirdPartQueryGoodsInfoByIdTest {
         parameterMap.put("app_key", appKey);
         parameterMap.put("channelId", source);
         parameterMap.put("queryType", queryType.toString());
-        parameterMap.put("skuId", skuId);
-        parameterMap.put("channelSalePrice", "496");
-
+        parameterMap.put("skuIds", skuIds.toString());
+        parameterMap.put("channelSalePrices", channelSalePrices.toString());
         String sign = APIUtil.createSign(appSecret, parameterMap);
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-
         params.add(new BasicNameValuePair("timestamp", new Timestamp(time).toString()));
         params.add(new BasicNameValuePair("v", "1.0"));
         params.add(new BasicNameValuePair("sign_method", sign_method));
@@ -67,8 +52,9 @@ public class ThirdPartQueryGoodsInfoByIdTest {
         params.add(new BasicNameValuePair("sign", sign));
         params.add(new BasicNameValuePair("channelId", source));
         params.add(new BasicNameValuePair("queryType", queryType.toString()));
-        params.add(new BasicNameValuePair("skuId", skuId));
-        params.add(new BasicNameValuePair("channelSalePrice", "496"));
+        params.add(new BasicNameValuePair("skuIds", skuIds.toString()));
+        params.add(new BasicNameValuePair("channelSalePrices", channelSalePrices.toString()));
+
 
         try {
             httpRequst.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
