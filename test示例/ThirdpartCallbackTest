@@ -1,0 +1,124 @@
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.util.Assert;
+
+import javax.net.ssl.SSLContext;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+public class CallbackTest {
+
+    /**
+     * 常量 最大客户端
+     */
+    private static final int MAX_CLIENT = 1000;
+
+    public static void main(String[] args) {
+        CallbackTest test = new CallbackTest();
+        String callbackUrl = "http://distribution.kaola.com/test/callback";
+        Map<String, String> data = new HashMap<>();
+        data.put("sign", "5390ABC885539FF0630684D68A9E8DF8");
+        data.put("info", "{\"changeTypes\":[5],\"channel\":401002,\"goodsId\":59125516,\"skuId\":\"10002235810\",\"updateTime\":1525678009527}");
+
+        CloseableHttpResponse response = null;
+        CloseableHttpClient httpclient = null;
+        String result = StringUtils.EMPTY;
+        try {
+            List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+            if (data != null) {
+                for (String key : data.keySet()) {
+                    qparams.add(new BasicNameValuePair(key, (String) data.get(key)));
+                }
+            }
+
+            HttpPost post = new HttpPost(callbackUrl);
+            UrlEncodedFormEntity entity = new UrlEncodedFormEntity(qparams, "UTF-8");
+            post.setEntity(entity);
+
+            httpclient = test.getClient(callbackUrl);
+            //设置请求和传输超时时间
+            RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(2000).setConnectTimeout(2000)
+                    .setConnectionRequestTimeout(1000).build();
+            post.setConfig(requestConfig);
+            response = httpclient.execute(post);
+            Assert.notNull(response);
+            if (response.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
+                result = EntityUtils.toString(response.getEntity(), "UTF-8");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            test.close(response, httpclient);
+        }
+
+        JSONObject responseObj = JSONObject.parseObject(result);
+        if (responseObj.get("recCode") != null && responseObj.getString("recCode").equals("200")) {
+            System.out.println("ok");
+            return;
+        }
+        System.out.println("error");
+    }
+
+    /**
+     * 获取CloseableHttpClient对象
+     * @return CloseableHttpClient
+     */
+    public CloseableHttpClient getClient(String url) {
+        try {
+            if (url.startsWith("https")) {
+                SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null,
+                        new TrustSelfSignedStrategy()).build();
+                SSLConnectionSocketFactory sslCSF = new SSLConnectionSocketFactory(sslContext,
+                        SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+                Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
+                        .register("https", sslCSF)
+                        .register("http", sslCSF)
+                        .build();
+
+                PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(registry);
+                cm.setMaxTotal(MAX_CLIENT);
+
+                return HttpClients.custom().setSSLSocketFactory(sslCSF).setConnectionManager(cm).build();
+            } else if (url.startsWith("http")) {
+                return HttpClients.createDefault();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return HttpClients.createDefault();
+    }
+
+    private void close(CloseableHttpResponse response, CloseableHttpClient httpclient) {
+        try {
+            if (response != null) {
+                response.close();
+            }
+            if (httpclient != null) {
+                httpclient.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
