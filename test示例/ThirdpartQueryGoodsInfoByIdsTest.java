@@ -29,10 +29,10 @@ public class ThirdpartQueryGoodsInfoByIdsTest {
         String sign_method = "md5";
         String appKey = "xxxxxxxxxxxxx";
         String appSecret = "xxxxxxxxxxxxx";
-        List<String> skuIds= new ArrayList<>();
-        skuIds.add("xxxxxxx-xxxxxxxxxxx");
-        List<String> channelSalePrices = new ArrayList<>();
-        channelSalePrices.add("496");
+        JSONArray skuIds= new JSONArray();
+        skuIds.put("xxxxxxx-xxxxxxxxxxx");
+	JSONArray channelSalePrices = new JSONArray();        
+        channelSalePrices.put("496");
         Integer queryType = 0;
         TreeMap<String, String> parameterMap = new TreeMap<String, String>();
         parameterMap.put("timestamp", new Timestamp(time).toString());
